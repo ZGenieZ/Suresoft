@@ -869,8 +869,4 @@ public class Dom4jParserMain {
             }            
         }
     }
-    
-   
-    
-    
 }

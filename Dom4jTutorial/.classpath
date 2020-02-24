@@ -19,5 +19,6 @@
 	<classpathentry kind="lib" path="libs/dom4j/tools/xercesImpl-2.6.2.jar"/>
 	<classpathentry kind="lib" path="libs/dom4j/endorsed/xml-apis-2.0.2.jar"/>
 	<classpathentry kind="lib" path="libs/dom4j/dom4j-1.6.1.jar" sourcepath="C:/Users/슈어_~1/AppData/Local/Temp/.org.sf.feeling.decompiler1581550333447/source/dom4j-1.6.1-sources.jar"/>
+	<classpathentry kind="lib" path="libs/dom4j/tools/org.dom4j.dom4j-1.6.1-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
