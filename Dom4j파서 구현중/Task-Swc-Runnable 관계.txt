@@ -1,0 +1,37 @@
+	Task 이름				Swc이름			Runnable 이름
+
+OsTask_BSW_FG1_10ms_Sub1	SwcInstance_EcuM_Slave1	EcuM_MainFunction1
+OsTask_BSW_FG1_10ms_Sub1	SwcInstance_Os_Slave1	Os_MeasureCPULoadSlave1
+OsTask_BSW_FG1_10ms_Sub2 	SwcInstance_EcuM_Slave2	EcuM_MainFunction2
+OsTask_BSW_FG1_10ms_Sub2 	SwcInstance_Os_Slave2	Os_MeasureCPULoadSlave2
+※OsTask_RteComTask 		검색x			Rte_ComSendSignalProxyImmediate
+OsTask_BSW_AppModeRequest 	SwcInstance_BswM		BswM_Immediate_SwcModeRequest_AppMode
+OsTask_BSW_ComMModeRequest 	SwcInstance_BswM		BswM_Immediate_SwcModeRequest_ComMMode_LCANFD
+OsTask_BSW_ComMModeRequest	SwcInstance_BswM		BswM_Immediate_SwcModeRequest_ComMMode_CCANFD
+OsTask_BSW_ComMModeRequest	SwcInstance_BswM		BswM_Immediate_SwcModeRequest_ComMMode_zDEBUGCAN
+OsTask_BSW_FG1_10ms 		BswInstance_WdgM	WdgM_MainFunction
+※OsTask_BSW_FG1_10ms 		BswInstance_EcuM		EcuM_MainFunction	예외(SHORT-NAME = AUTOSAR_EcuM)
+※OsTask_BSW_FG1_10ms		BswInstance_EcuM		EcuM_LoopDetection	예외(SHORT-NAME = AUTOSAR_EcuM)
+OsTask_BSW_FG1_10ms 		BswInstance_Csm		Csm_MainFunction
+OsTask_ASW_FG1_10ms 		SwcInstance_SWC_DiagnosticMonitor 		DiagnosticMonitor
+OsTask_ASW_FG1_10ms		SwcInstance_Swc_WdgMTest 	RE_WdgMTest
+OsTask_ASW_FG1_10ms		SwcInstance_Os_Master	Os_MeasureCPULoad
+OsTask_BSW_FG1_5ms_Com 		BswInstance_ComM	ComM_MainFunction_0
+OsTask_BSW_FG1_5ms_Com 		BswInstance_ComM	ComM_MainFunction_1
+OsTask_BSW_FG1_5ms_Com 		BswInstance_ComM	ComM_MainFunction_2
+OsTask_BSW_FG1_5ms_Com		BswInstance_Xcp		Xcp_MainFunction
+OsTask_BSW_FG1_5ms_Com		BswInstance_Com		Com_MainFunctionRx
+OsTask_BSW_FG1_5ms_Com		BswInstance_CanSM	CanSM_MainFunction
+OsTask_BSW_FG1_5ms_Com		BswInstance_Dcm		Dcm_MainFunction
+OsTask_BSW_FG1_5ms_Com		BswInstance_CanTp		CanTp_MainFunction
+OsTask_BSW_BG_Csm 		BswInstance_Csm		Csm_Worker
+OsTask_BSW_FG1_5ms_Mem 		BswInstance_Dem		Dem_MainFunction
+OsTask_BSW_FG1_5ms_Mem 		BswInstance_NvM		NvM_MainFunction
+OsTask_BSW_Mem_Process 		BswInstance_NvM		NvM_Call_MemMainFunctions
+OsTask_BSW_RomTst 		BswInstance_RomTst 	RomTst_MainFunction
+OsTask_ASW_FG1_100ms 		SwcInstance_SWC_AppMode		AppMode_Test
+OsTask_ASW_FG1_100ms		SwcInstance_SWC_AppTransformer	App_Transformer_runnable
+OsTask_ASW_FG2_WdgMTestMode 	SwcInstance_Swc_WdgMTest		RE_WdgMTestGlobalMode
+※OsTask_BSW_FG2_WdgMAPI 	SwcInstance_Svc_WdgM	WdgM_SetMode		예외(COMPOSITION-SW-COMPONENT-TYPE) <- 현재 포함되어 있음. 왜 ?
+OsTask_BSW_FG1_100ms 		BswInstance_RamTst	RamTst_MainFunction
+OsTask_BSW_FG1_100ms 		BswInstance_RegMon	RegMon_RegMonitor

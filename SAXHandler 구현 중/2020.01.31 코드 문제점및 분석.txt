@@ -1,0 +1,29 @@
+1<SHORT-NAME> SWC		
+2	<VALUE-REF>OSTASK	
+
+3	<SHORT-NAME> SWC 아님	
+4		<SHORT-NAME> SWC아님	
+
+5<SHORT-NAME>SWC		
+	<SHORT-NAME>SWC 아님	
+6		<VALUE-REF>OSTASK	
+		=>이때 false로 한다면?(SWC를 만나고 쓸데없는 VALUE-REF를 지나 처음 도착한 OSTASK를 만나면 true->false로 스위치 오프)
+			문제점 : 한 SWC내에 더 검색할 Task가 남아있는경우 여전히 false가 될 가능성이 있으므로(중간에 쓸데없는 VALUE-REF가 존재하기 때문)
+				 2개 이상의 Task가 검색이 안됨
+			해결법 : 하지만 한 OSTASK를 검색하고 나서 다시 Swc이름을 검사한다면?
+		<SHORT-NAME>SWC 아님
+7		<VALUE-REF>OSTASK
+
+<SHORT-NAME>SWC
+	<VALUE-REF>OSTASK
+	<SHORT-NAME>SWC 아님
+	<VALUE-REF>OSTASK
+	<SHORT-NAME>SWC 아님
+	<VALUE-REF>OSTASK
+	<SHORT-NAME>SWC 아님
+
+1.SWC 이후에 바로 TASK가 나올경우 <- listOfNotSwc가 유효
+2.SWC 이후에 SWC아닌 SHORT-NAME 후에 TASK가 나올 경우 <- 이 경우가 문제(listOfNotSwc가 유효하지 않음 = TASK 전에 SWC아닌 SHORT-NAME이 잇으면
+listOfNotSwc의 size가 0보다 커지게됨)
+
+

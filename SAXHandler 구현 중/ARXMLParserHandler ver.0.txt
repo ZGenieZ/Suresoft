@@ -1,0 +1,232 @@
+package com.suresofttech.provautosar.parser;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.HashMap;
+import java.util.Iterator;
+
+import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
+
+//XML 문서의 시작이 인식되었을 때 발생하는 이벤트를 처리
+public class ARXMLParserHandler extends DefaultHandler{
+	boolean isTaskParsingStarted,isSwcParsingStarted;
+	private String elementName = "";
+	private StringBuffer sBuffer = new StringBuffer();
+	private int Taskcount=0;
+	private int Swccount;
+	
+	Map <String,List<String>> listOfTaskRelationMap = new HashMap<String,List<String>>();
+	List<String> listOfSwc = new ArrayList<String>();
+	List<String> listOfTask = new ArrayList<String>();
+	List<String> listOfSwcBox = new ArrayList<String>(); //임시 저장 리스트
+	
+	/*public void setDocumentLocator(Locator loc){
+		System.out.println("[파일] "+loc.getSystemId());
+	}*/
+	
+	public void startDocument(){
+		System.out.println("Start Document!");
+		System.out.println("");
+		//listOfTask.clear();
+	}
+	
+	//XML 문서의 끝이 인식되었을 때 발생하는 이벤트를 처리
+	public void endDocument(){
+		System.out.println("End Document!");
+		System.out.println("");
+		
+		//listOfTask에 담은 Task 이름들을 전체적으로 비교하여 중복되는 값은 제거하는 과정
+		for(int i=0; i<listOfTask.size();i++){
+			//System.out.println(listOfTask.size());
+			String DuplicatedCheck = listOfTask.get(i);
+			for(int j=0; j<listOfTask.size();j++){
+				if(DuplicatedCheck.equals(listOfTask.get(j))&& i!=j){
+					String a = listOfTask.remove(j);
+					//System.out.println("삭제된  Task 이름 : "+a+", 삭제된 리스트의 인덱스 번호 : "+j);
+						if(a.length()>0){
+							j-=1;
+							continue;
+						}
+				}
+			}
+		}
+		
+		for(String a : listOfTask){
+			//System.out.println(a);
+			Taskcount++;
+		}
+		
+		for(String a : listOfSwc){
+			//System.out.println(a);
+			Swccount++;
+		}
+		
+		//System.out.println("Task 검색 갯수 : "+Taskcount+", Swc 검색 갯수 : "+Swccount);
+		
+		if(Taskcount == 16 && Swccount == 48){
+			Iterator Taskiterator = listOfTask.iterator();
+			
+			while (Taskiterator.hasNext()) {
+				String TaskName = (String) Taskiterator.next();
+				//System.out.println(TaskName);
+				switch(TaskName){
+					case "OsTask_BSW_Mem_Process":
+						for(String T : listOfSwc){
+							if(T.equals("BswInstance_NvM")){
+								listOfSwcBox.add(T);
+							}
+						}
+			
+						listOfTaskRelationMap.put(TaskName,listOfSwcBox);
+						listOfSwcBox.clear();
+						break;
+						
+					case "OsTask_BSW_FG1_10ms":
+						for(String T : listOfSwc){
+							//EcuM_MainFunction()의 BswTE_EcuM_MainFunction은 정확하지 않아서 일단 제외함
+							if(T.equals("BswInstance_WdgM") || T.equals("BswInstance_Csm")){
+								listOfSwcBox.add(T);
+							}
+						}
+						listOfTaskRelationMap.put(TaskName,listOfSwcBox);
+						listOfSwcBox.clear();
+						break;
+					default:
+						break;
+					}
+				}
+			}
+		
+			/*Set keyset = listOfTaskRelationMap.keySet();
+			System.out.println(keyset);*/
+			/*Set set = listOfTaskRelationMap.entrySet();
+			System.out.println(set);*/
+			
+		
+			/*for(String key : listOfTaskRelationMap.keySet()){
+				System.out.println("key : "+key+"/ value : "+listOfTaskRelationMap.get(key));
+			}*/
+		
+			System.out.println(listOfSwc);
+		
+			//기존 리스트들에 데이터를 덮어쓰지 않기 위해 초기화 
+			listOfTaskRelationMap.clear();
+			listOfTask.clear();
+			listOfSwc.clear();
+		}
+
+	
+	//Element의 시작을 인식했을 때 발생하는 이벤트를 처리
+	public void startElement(String uri,String localName,String qname,Attributes attr){
+			isTaskParsingStarted = false;
+			isSwcParsingStarted = false;
+			elementName = qname;
+			//System.out.println("Start element, Name : "+qname);
+			if(qname == "VALUE-REF")
+				isTaskParsingStarted = true;
+			if(qname == "SHORT-NAME")
+				isSwcParsingStarted = true;
+		/*for(int i=0;i<attr.getLength();i++){
+			System.out.println("Attributes : "+attr.getQName(i)+"="+attr.getValue(i));
+			
+		}*/
+	}
+	//Element의  끝을 인식했을 때 발생하는 이벤트를 처리
+	public void endElement(String uri,String localName,String qname){
+		//System.out.println("End element, Name : "+qname);
+	}
+	
+	//각 Element의 값(인식된 문자의 각 세그먼트에 대해서 호출)
+	public void characters(char[] ch,int start,int length) throws SAXException{
+		//System.out.println(isParsingStarted);
+		String strValue = "";	
+		String TaskName = "";
+		String SwcName = "";
+		//int TaskCount = 0;
+		int SwcCount = 0;
+		//System.out.println("isParsingStarted = "+isParsingStarted);
+		
+		//Task 이름을  파싱
+		if(isTaskParsingStarted){
+			
+			//Element의 값을 구하기 위해서는 Buffer에 인식된 각 문자를 start에서 length만큼 append한다.
+			sBuffer.append(new String(ch,start,length));
+			strValue = sBuffer.toString().trim();
+		/*if(strValue.contains("OsTask")){
+			listOfTask.add(new String(ch,start,length));
+		}*/
+			if(strValue != null && strValue.length()!=0 && !strValue.equals("\n")){
+				if(strValue.contains("Os/OsTask")){
+					TaskName = strValue.substring(12);
+					listOfTask.add(TaskName);
+					
+					/*Iterator iterator = listOfTask.iterator();
+					
+					//중복된 Task 이름이 리스트 내에 있으면 추가하지 않음
+						while(iterator.hasNext()){
+						String DuplicatedCheck = (String) iterator.next();
+						System.out.println(DuplicatedCheck);
+						if(!DuplicatedCheck.equals(TaskName))
+							listOfTask.add(TaskName);
+					}*/
+					
+					//System.out.println("elementName : "+elementName+", strValue : "+TaskName);
+					
+				/*	for(String T : listOfTask){
+						System.out.println(T);
+						System.out.println("");
+						TaskCount++;
+						Taskcount = TaskCount;	//검색된 Task 이름 갯수
+					}*/
+					
+				}
+					/*for(int i=0; i<listOfTask.size();i++){
+						
+						System.out.println("통과!");
+						for(int j=0; j<listOfTask.size();j++){
+							System.out.println("2번째 통과!");
+							String DuplicatedCheck = listOfTask.get(i);
+							if(DuplicatedCheck.equals(listOfTask.get(j)))
+								listOfTask.remove(j);
+							else
+								continue;
+						}
+					}
+					
+					TaskCount++;
+					Taskcount = TaskCount;	//검색된 Task 이름 갯수
+*/					sBuffer.setLength(0);
+					isTaskParsingStarted = false;
+			}
+		}
+		
+		//SWC 이름 을 파싱
+		if(isSwcParsingStarted){
+			sBuffer.append(new String(ch,start,length));
+			strValue = sBuffer.toString().trim();
+			
+			if(strValue != null && strValue.length()!=0 && !strValue.equals("\n")){
+				if(strValue.contains("Instance_")){
+					SwcName = strValue;
+					listOfSwc.add(SwcName);
+					
+					//System.out.println("elementName : "+elementName+", strValue : "+TaskName);
+					
+					/*for(String T : listOfSwc){
+						System.out.println(T);
+						System.out.println("");
+						SwcCount++;
+						Swccount = SwcCount;	//검색된 Swc 이름 갯수
+					}*/
+				}
+					sBuffer.setLength(0);
+					isSwcParsingStarted = false;
+			}
+		}
+	}
+}

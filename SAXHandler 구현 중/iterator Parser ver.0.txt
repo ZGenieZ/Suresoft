@@ -1,0 +1,41 @@
+if(Taskcount == 16 && Swccount == 48){
+			Iterator Taskiterator = listOfTask.iterator();
+			Iterator Swciterator = listOfSwc.iterator();
+			while (Taskiterator.hasNext()) {
+				String TaskName = (String) Taskiterator.next();
+				switch(TaskName){
+					case "OsTask_BSW_Mem_Process":
+						while(Swciterator.hasNext()){
+							String SwcName = (String)Swciterator.next();
+							if(SwcName == "BswInstance_NvM"){
+								listOfSwcBox.add(SwcName);
+							}
+						}
+						listOfTaskRelationMap.put(TaskName,listOfSwcBox);
+						listOfSwcBox.clear();
+						break;
+						
+					case "OsTask_BSW_FG1_10ms":
+						while(Swciterator.hasNext()){
+							String SwcName = (String)Swciterator.next();
+							
+							//EcuM_MainFunction()의 BswTE_EcuM_MainFunction은 정확하지 않아서 일단 제외함
+							if(SwcName == "BswInstance_WdgM" || SwcName == "BswInstance_Csm"){
+								listOfSwcBox.add(SwcName);
+							}
+						}
+						listOfTaskRelationMap.put(TaskName,listOfSwcBox);
+						listOfSwcBox.clear();
+						break;
+						
+					
+				}
+				//listOfTaskRelationMap.put(TaskName,listOfSwc);
+			}
+			
+			
+			/*Set keyset = listOfTaskRelationMap.keySet();
+			System.out.println(keyset);*/
+			Set set = listOfTaskRelationMap.entrySet();
+			System.out.println(set);
+		}

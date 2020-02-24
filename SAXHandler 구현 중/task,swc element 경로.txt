@@ -1,0 +1,13 @@
+<CONTAINERS> 
+  <ECUC-CONTAINER-VALUE>
+     <SHORT-NAME>Swc 이름
+
+<CONTAINERS> 
+  <ECUC-CONTAINER-VALUE>
+     <SHORT-NAME>
+        <SUB-CONTAINERS>
+           <ECUC-CONTAINER-VALUE>
+              <REFERENCE-VALUES>
+                  <ECUC-REFERENCE-VALUE>
+                     <VALUE-REF>Task 이름
+

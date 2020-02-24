@@ -1,0 +1,509 @@
+package com.suresofttech.car.provautosar.core.main;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.dom4j.Attribute;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.Element;
+import org.dom4j.Namespace;
+import org.dom4j.Node;
+import org.dom4j.QName;
+import org.dom4j.io.SAXReader;
+
+public class Ex {
+
+    public static void main(String[] args)
+    {
+        Ex tm = new Ex();
+        tm.run();
+    }
+
+    public void run()
+    {
+    	ArrayList EntireFilepath = new ArrayList<>();	//검사하려는 arxml 파일들의 경로를 담고 있는 리스트
+    	
+    	String odinPath = "C:\\Users\\슈어_공용\\Downloads\\3.분석대상파일";
+			GetTaskSwcRelationMap();
+			
+			EntireFilepath.addAll(GetEachFilepathList(odinPath + "\\Configuration\\System\\Swcd_Bsw"));
+			EntireFilepath.addAll(GetEachFilepathList(odinPath + "\\Generated\\Bsw_Output\\swcd"));
+			EntireFilepath.addAll(GetEachFilepathList(odinPath + "\\Generated\\Bsw_Output\\bswmd"));
+			EntireFilepath.addAll(GetEachFilepathList(odinPath + "\\Configuration\\System\\Swcd_App"));
+			EntireFilepath.addAll(GetEachFilepathList(odinPath + "\\Configuration\\System\\Bswmd"));
+			
+			/*Iterator iter = EntireFilepath.iterator();
+					while(iter.hasNext()){
+						String a = ((File) iter.next()).getPath();
+						System.out.println(a);
+					}*/
+			
+			//GetSwcRunnableList(EntireFilepath);
+			//GetBswRunnableList(EntireFilepath);
+			ArrayList<ArrayList> SwcRunnableList = GetSwcRunnableList(EntireFilepath);
+			ArrayList<ArrayList> BswRunnableList = GetSwcRunnableList(EntireFilepath);
+			ArrayList<ArrayList> SwcBswRunnableList = GetSwcRunnableList(EntireFilepath);
+			//System.out.println("SwcRunnableList 크기 : "+SwcRunnableList.size()+" || "+"BswRunnableList 크기 : "+BswRunnableList.size());
+			
+			Iterator i = SwcRunnableList.iterator();
+			while(i.hasNext()){
+				ArrayList list = (ArrayList) i.next();
+				SwcBswRunnableList.add(list);
+			}
+			
+			Iterator j = BswRunnableList.iterator();
+			while(j.hasNext()){
+				ArrayList list = (ArrayList) j.next();
+				SwcBswRunnableList.add(list);
+			}
+			
+			//TODO : 두 배열을 합치는데 문제가 있음. 
+			Iterator iter = SwcBswRunnableList.iterator();
+			while(iter.hasNext()){
+				System.out.println((ArrayList)iter.next());
+			}
+			
+			
+    }
+    
+  //SwcRunnable 이름과 그에 따른 경로를 가지고 있는 리스트를 반환
+    public static ArrayList GetBswRunnableList(ArrayList list){
+    	ArrayList<ArrayList> BswRunnablePathRelationlist = new ArrayList<>();
+    	Iterator pathiter = list.iterator();
+    	
+    	while(pathiter.hasNext()){
+    		//File 배열에 들어있는 경로를 String으로 변환함
+    		String StringFilepath = ((File) pathiter.next()).getPath();
+    		File file = new File(StringFilepath);
+    		SAXReader reader = new SAXReader();
+    		Document doc;
+    		try{
+    			doc = reader.read(file);
+    			removeAllNamespaces(doc);
+    			 ArrayList nodelist = (ArrayList) doc.selectNodes("//ELEMENTS/BSW-MODULE-ENTRY/SHORT-NAME");
+    			 for (int i = 0; i < nodelist.size(); i++){
+    				 	//임시 리스트
+    		        	ArrayList Box = new ArrayList();
+    		        	Element el = (Element) nodelist.get(i);
+    		            String NameofBswRunnable = el.getText();
+    		            String PathofBswRunnable = el.getPath();
+    		            String UniquePathofBswRunnable = el.getUniquePath();
+    		            
+    		            Box.add(NameofBswRunnable);
+    		            Box.add(UniquePathofBswRunnable);
+    		            //System.out.println(Box);
+    		            BswRunnablePathRelationlist.add(Box);
+    		       }
+    			 
+    		}catch(DocumentException e){
+    			e.printStackTrace();
+    		}catch(ClassCastException e){
+    			continue;
+    		}
+    		doc = null;
+    	}
+    	/*for(int i=0;i<BswRunnablePathRelationlist.size();i++){
+    		ArrayList test = BswRunnablePathRelationlist.get(i);
+				System.out.println("Runnable 이름 : "+test.get(0)+" || 경로 : "+test.get(1));
+		 }*/
+    	
+    	return BswRunnablePathRelationlist;
+    }
+    
+    //SwcRunnable 이름과 그에 따른 경로를 가지고 있는 리스트를 반환
+    public static ArrayList GetSwcRunnableList(ArrayList list){
+    	ArrayList<ArrayList> SwcRunnablePathRelationlist = new ArrayList<>();
+    	Iterator pathiter = list.iterator();
+    	
+    	while(pathiter.hasNext()){
+    		//File 배열에 들어있는 경로를 String으로 변환함
+    		String StringFilepath = ((File) pathiter.next()).getPath();
+    		File file = new File(StringFilepath);
+    		SAXReader reader = new SAXReader();
+    		Document doc;
+    		try{
+    			doc = reader.read(file);
+    			removeAllNamespaces(doc);
+    			 ArrayList nodelist = (ArrayList) doc.selectNodes("//RUNNABLES/RUNNABLE-ENTITY/SYMBOL");
+    			 for (int i = 0; i < nodelist.size(); i++){
+    				 	//임시 리스트
+    		        	ArrayList Box = new ArrayList();
+    		        	Element el = (Element) nodelist.get(i);
+    		            String NameofSwcRunnable = el.getText();
+    		            String PathofSwcRunnable = el.getPath();
+    		            String UniquePathofSwcRunnable = el.getUniquePath();
+    		            
+    		            Box.add(NameofSwcRunnable);
+    		            Box.add(UniquePathofSwcRunnable);
+    		            //System.out.println(Box);
+    		            SwcRunnablePathRelationlist.add(Box);
+    		       }
+    			 
+    		}catch(DocumentException e){
+    			e.printStackTrace();
+    		}catch(ClassCastException e){
+    			continue;
+    		}
+    		doc = null;
+    	}
+    	/*for(int i=0;i<SwcRunnablePathRelationlist.size();i++){
+    		ArrayList test = SwcRunnablePathRelationlist.get(i);
+				System.out.println("Runnable 이름 : "+test.get(0)+" || 경로 : "+test.get(1));
+		 }*/
+    	
+    	return SwcRunnablePathRelationlist;
+    }
+    
+    //filepath 경로 폴더내에 존재하는 모든 파일을 담은 리스트를 반환하는 함수
+    public static ArrayList GetEachFilepathList(String filepath){
+    	File file = new File(filepath);
+    	SAXReader reader = new SAXReader();
+    	Document doc;
+    	ArrayList Fpath = new ArrayList<>();
+    	try {
+    		for(File f : file.listFiles()) {
+				doc = reader.read(f);
+				removeAllNamespaces(doc);
+				Fpath.add(f);
+			}
+		} catch (DocumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	doc = null;
+    	return Fpath;
+    }
+    
+    
+    //Task-Swc 관계를 담은 맵을 반환
+    public static Map GetTaskSwcRelationMap(){
+    	Map<String,ArrayList> FinalTaskSwcRelationmap = new HashMap<String,ArrayList>();
+    	String filePath = ".\\templates\\Ecud_Rte.arxml";
+    	File file = new File(filePath);
+		SAXReader reader = new SAXReader();
+    	Document doc;
+    	try {
+			doc = reader.read(file);
+			removeAllNamespaces(doc);
+    	Map<String,ArrayList> TaskSwcRelationmap = new HashMap<String,ArrayList>();
+    	Map<String,ArrayList> TaskPathRelationmap = getTaskNodeMap(doc,"//ECUC-REFERENCE-VALUE/VALUE-REF");
+    	ArrayList<ArrayList> listOfSwc = getSwcNodeList(doc,"//CONTAINERS/ECUC-CONTAINER-VALUE/SHORT-NAME");
+    	ArrayList<ArrayList> listOfTask = getTaskNodeList(doc,"//ECUC-REFERENCE-VALUE/VALUE-REF");
+		
+    	
+    	for(String key : TaskPathRelationmap.keySet()){
+    		ArrayList pathlistOfTask = new ArrayList();
+    		pathlistOfTask = TaskPathRelationmap.get(key);
+    		//Task-Swc를 매핑하기 위한 임시 Swc 리스트
+    		ArrayList listOfSwcBox = new ArrayList();
+    		for(int i =0; i<pathlistOfTask.size();i++){
+    			for(int j =0; j<listOfSwc.size();j++){
+    				String AllpathOfSwc = (String) listOfSwc.get(j).get(1);
+    				String FixpathOfSwc = AllpathOfSwc.replace("SHORT-NAME","");
+    				String SwcName = (String) listOfSwc.get(j).get(0);
+    				String pathOfTask = (String) pathlistOfTask.get(i);
+    				if(pathOfTask.contains(FixpathOfSwc))
+    					listOfSwcBox.add(SwcName);
+    				
+    			}
+    			if(i == pathlistOfTask.size()-1)
+    				TaskSwcRelationmap.put(key,listOfSwcBox);
+    			
+    		}
+    			
+    	}
+    	
+    	/*//TaskSwcRelationmap의 value값 = 리스트 중에 중복된 값들을 제거하는 작업
+    	Iterator iter = TaskSwcRelationmap.keySet().iterator();
+    	while(iter.hasNext()){
+    		System.out.println(iter.next());
+    		ArrayList list = TaskSwcRelationmap.get(iter.next());
+    		ArrayList Newlist = new ArrayList(new HashSet(list));
+    		//FinalTaskSwcRelationmap.put((String) iter.next(), Newlist);
+    	}*/
+    	
+    	//TaskSwcRelationmap의 value값 = 리스트 중에 중복된 값들을 제거하는 작업
+    	for(String key : TaskSwcRelationmap.keySet()){
+    		ArrayList list = TaskSwcRelationmap.get(key);
+    		ArrayList Newlist = new ArrayList(new HashSet(list));
+    		FinalTaskSwcRelationmap.put(key, Newlist);
+    	}
+    	
+    	
+    	//Map 프린팅해보기
+    	/*for ( String key : FinalTaskSwcRelationmap.keySet() ) {
+    	    System.out.println("Taskname : " + key +" || Swcname : " + FinalTaskSwcRelationmap.get(key));
+    	}*/
+    	
+    		
+    	} catch (DocumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	doc = null;
+    	return FinalTaskSwcRelationmap;
+    }
+    	
+    /**
+     * Document에서 Xpath로 결과값  추출
+     * @param Document
+     * @param Xpath
+     * @return
+     */
+    public static String strGetNodeText(Document doc, String strXpath)
+    {
+        try {
+            Node node = doc.selectSingleNode(strXpath);
+            return node.getText();
+        } catch (NullPointerException ne) {
+            return "";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+    
+    /**
+     * Element에서 Xpath로 결과값  추출
+     * @param Element
+     * @param Xpath
+     * @return
+     */
+    public static String strGetNodeText(Element el, String strXpath)
+    {
+        try {
+            Node node = el.selectSingleNode(strXpath);
+            return node.getText();
+        } catch (NullPointerException ne) {
+            return "";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    /**
+     * ArrayList에 담기 및  모든 Element를 출력
+     * @param alList
+     */
+    public static void doViewAllElement(ArrayList alList)
+    {
+
+        for (int i = 0; i < alList.size(); i++)
+        {
+            Element el = (Element) alList.get(i);
+            if (el.getText().length() > 0)
+            	 System.out.println(el.getText());
+            //System.out.println("NAME : " + el.getUniquePath() + " || VALUE : " + el.getText());
+            else
+            System.out.println("NAME : " + el.getUniquePath());
+        }
+        System.out.println();
+    }
+    
+    /**
+     * document에서 xpath에 해당되는 모든 element를 리턴
+     * @param doc
+     * @param strXpath
+     * @return
+     */
+    public static ArrayList getNodeList(Document doc, String strXpath)
+    {
+        return (ArrayList) doc.selectNodes(strXpath);
+    }
+    
+    //Swc 이름과 해당 경로를 저장하고 있는 리스트를 반환
+    public static ArrayList getSwcNodeList(Document doc, String strXpath)
+    {
+        ArrayList list = (ArrayList) doc.selectNodes(strXpath);
+        ArrayList<ArrayList> SwcPathRelationlist = new ArrayList();
+        for (int i = 0; i < list.size(); i++)
+        {
+        	//임시 리스트
+        	ArrayList Box = new ArrayList();
+            Element el = (Element) list.get(i);
+            String NameofSwc = el.getText();
+            String PathofSwc = el.getUniquePath();
+            if(NameofSwc.contains("Instance_")){
+            	Box.add(NameofSwc);
+            	Box.add(PathofSwc);
+            	SwcPathRelationlist.add(Box);
+            }
+            //System.out.println("NAME : " + el.getUniquePath() + " || VALUE : " + el.getText());
+        }
+        return SwcPathRelationlist;
+    }
+    
+    //Task 이름과 해당 경로들을 저장하고 있는 맵을 반환
+    public static Map getTaskNodeMap(Document doc, String strXpath){
+    	Map<String,ArrayList> map = new HashMap<String,ArrayList>();
+    	ArrayList list = (ArrayList) doc.selectNodes(strXpath);
+    	ArrayList<ArrayList> TaskPathRelationlist = new ArrayList<ArrayList>();
+    	
+    	
+        for (int i = 0; i < list.size(); i++){
+        	//임시 리스트
+        	ArrayList Box = new ArrayList();
+        	Element el = (Element) list.get(i);
+            String NameofTask = el.getText().substring(12);
+            String PathofTask = el.getUniquePath();
+            if(NameofTask.contains("OsTask")){
+            	Box.add(NameofTask);
+            	Box.add(PathofTask);
+            	TaskPathRelationlist.add(Box);
+            }
+        }
+        
+      //Task 이름 중복 제거 작업 및 경로 
+        for(int i=0; i<TaskPathRelationlist.size();i++){
+			ArrayList DuplicatedCheck = new ArrayList<>();
+			DuplicatedCheck = TaskPathRelationlist.get(i);
+			for(int j=0; j<TaskPathRelationlist.size();j++){
+				if(DuplicatedCheck.get(0).equals(TaskPathRelationlist.get(j).get(0))&& i!=j){
+					if(DuplicatedCheck.get(1) != TaskPathRelationlist.get(j).get(1)){
+						DuplicatedCheck.add(TaskPathRelationlist.get(j).get(1));
+						TaskPathRelationlist.remove(j);
+						j-=1;
+						continue;
+					}
+				}
+			}
+		}
+        
+        
+        //TaskPathRelationlist를 맵으로 변환하는 과정(TaskPathRelationlist의 첫번째 인덱스 : Task이름, 나머지 인덱스 : 다수의 경로들)
+        for(int i=0;i<TaskPathRelationlist.size();i++){
+        	ArrayList PathListBox = new ArrayList<>();
+        	String Taskname = (String) TaskPathRelationlist.get(i).get(0);
+        	for(int j=1;j<TaskPathRelationlist.get(i).size();j++){
+        		PathListBox.add(TaskPathRelationlist.get(i).get(j));
+        		
+        		if(PathListBox.size() == TaskPathRelationlist.get(i).size()-1)
+        			map.put(Taskname, PathListBox);
+        	}
+        }
+        //Task와 Path의 관계를 정리한 Map
+    	return map;
+    }
+    
+  //Task 이름과 해당 경로를 저장하고 있는 리스트를 반환(TaskPathRelationlist의 첫번째 인덱스 : Task이름, 나머지 인덱스 : 다수의 경로들)
+    public static ArrayList getTaskNodeList(Document doc, String strXpath)
+    {
+    	ArrayList list = (ArrayList) doc.selectNodes(strXpath);
+    	ArrayList<ArrayList> TaskPathRelationlist = new ArrayList<ArrayList>();
+    	
+        for (int i = 0; i < list.size(); i++){
+        	//임시 리스트
+        	ArrayList Box = new ArrayList();
+        	Element el = (Element) list.get(i);
+            String NameofTask = el.getText().substring(12);
+            String PathofTask = el.getUniquePath();
+            if(NameofTask.contains("OsTask")){
+            	Box.add(NameofTask);
+            	Box.add(PathofTask);
+            	TaskPathRelationlist.add(Box);
+            }
+        }
+        
+      //Task 이름 중복 제거
+        for(int i=0; i<TaskPathRelationlist.size();i++){
+			ArrayList DuplicatedCheck = new ArrayList<>();
+			DuplicatedCheck = TaskPathRelationlist.get(i);
+			for(int j=0; j<TaskPathRelationlist.size();j++){
+				if(DuplicatedCheck.get(0).equals(TaskPathRelationlist.get(j).get(0))&& i!=j){
+					if(DuplicatedCheck.get(1) != TaskPathRelationlist.get(j).get(1)){
+						TaskPathRelationlist.get(i).add(TaskPathRelationlist.get(j).get(1));
+						TaskPathRelationlist.remove(j);
+						j-=1;
+						continue;
+					}
+				}
+			}
+		}
+        return TaskPathRelationlist;
+    }
+
+    /**
+     * element에서 xpath에 해당되는 모든 element를 리턴
+     * @param element
+     * @param strXpath
+     * @return
+     */
+    public static ArrayList getNodeList(Element element, String strXpath)
+    {
+        return (ArrayList) element.selectNodes(strXpath);
+    }
+    
+    public static void removeAllNamespaces(Document doc) {
+        Element root = doc.getRootElement();
+        if (root.getNamespace() !=
+                Namespace.NO_NAMESPACE) {            
+                removeNamespaces(root.content());
+        }
+    }
+
+    public static void unfixNamespaces(Document doc, Namespace original) {
+        Element root = doc.getRootElement();
+        if (original != null) {
+            setNamespaces(root.content(), original);
+        }
+    }
+
+    public static void setNamespace(Element elem, Namespace ns) {
+
+        elem.setQName(QName.get(elem.getName(), ns,
+                elem.getQualifiedName()));
+    }
+
+    /**
+     *Recursively removes the namespace of the element and all its
+    children: sets to Namespace.NO_NAMESPACE
+     */
+    public static void removeNamespaces(Element elem) {
+        setNamespaces(elem, Namespace.NO_NAMESPACE);
+    }
+
+    /**
+     *Recursively removes the namespace of the list and all its
+    children: sets to Namespace.NO_NAMESPACE
+     */
+    public static void removeNamespaces(List l) {
+        setNamespaces(l, Namespace.NO_NAMESPACE);
+    }
+
+    /**
+     *Recursively sets the namespace of the element and all its children.
+     */
+    public static void setNamespaces(Element elem, Namespace ns) {
+        setNamespace(elem, ns);
+        setNamespaces(elem.content(), ns);
+    }
+
+    /**
+     *Recursively sets the namespace of the List and all children if the
+    current namespace is match
+     */
+    public static void setNamespaces(List l, Namespace ns) {
+        Node n = null;
+        for (int i = 0; i < l.size(); i++) {
+            n = (Node) l.get(i);
+
+            if (n.getNodeType() == Node.ATTRIBUTE_NODE) {
+                ((Attribute) n).setNamespace(ns);
+            }
+            if (n.getNodeType() == Node.ELEMENT_NODE) {
+                setNamespaces((Element) n, ns);
+            }            
+        }
+    }
+    
+   
+    
+    
+}

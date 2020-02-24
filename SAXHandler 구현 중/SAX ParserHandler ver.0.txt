@@ -1,0 +1,54 @@
+package com.suresofttech.car.provautosar.core.main;
+
+import java.util.ArrayList;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
+
+public class XMLParserHandler extends DefaultHandler{
+	
+	private String elementName = "";
+	private StringBuffer sBuffer = new StringBuffer();
+	private ArrayList tagList = new ArrayList();
+	
+	//XML 문서의 시작이 인식되었을 때 발생하는 이벤트를 처리
+	public void startDocument(){
+		System.out.println("Start Document");
+	}
+	
+	//XML 문서의 끝이 인식되었을 때 발생하는 이벤트를 처리
+	public void endDocument(){
+		System.out.println("End Document");
+	}
+	
+	//Element의 시작을 인식하였을 때 발생하는 이벤트를 처리
+	public void startElement(String uri, String locanName, String qname, Attributes attr){
+		elementName = qname; //element 명을 멤버 변수에 넣어 둔다.
+		int attrCount = attr.getLength(); //태그 갯수
+		String attrName = attr.getQName(0); //첫번째 태그 임의 설정
+		String attrValue = attr.getValue(attrName); //해당 태그의 Value값 설정
+		
+		if(qname.equals("author")){
+			 attrCount = attr.getLength();//태그 갯수
+			 for(int i=0 ; i<attrCount ;i++){
+				 String file_nm = attrValue.substring(attrValue.lastIndexOf(".")-6);
+				 tagList.add(file_nm);
+			 }
+			 System.out.println("속성값  ============ "+attrName+""+attrValue);
+		}
+		System.out.println("속성값 ============= "+attrName+""+attrValue);
+		sBuffer.setLength(0);	//buffer 초기화
+	}
+	
+	//엘리먼트의 끝을 인식했을 때 발생하는 이벤트를 처리
+	public void endElement(String uri,String localName,String qname){
+		System.out.println("End element, Name : "+qname);
+	}
+	
+	
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}
