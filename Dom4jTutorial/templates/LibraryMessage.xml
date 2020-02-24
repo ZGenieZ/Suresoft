@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<Lib_Message>
+    <InfoLibrary>
+        <LibraryHeader>
+            <Version>1.0
+            </Version>
+            <CommonInfo>
+                <Author>KCSLancer
+                </Author>
+                <WroteDate>
+                    </WroteDate>
+                    <Purpose>None
+                    </Purpose>
+                </CommonInfo>
+            </LibraryHeader>
+            <LibraryBody>
+                <CentreLibrary>
+                    <LibraryInfo>
+                        <LibName>National Centeral Library
+                        </LibName>
+                        <AddressLib>Seoul, Kangnamgu..
+                        </AddressLib>
+                        <Telephone>02-9999-1234
+                        </Telephone>
+                        <MainBook>
+                            <BookTitle>DDD SSSS
+                            </BookTitle>
+                            <BookComment>NONE
+                            </BookComment>
+                            <BookPrice>90,000
+                            </BookPrice>
+                        </MainBook>
+                        <MainBook>
+                            <BookTitle>World Star
+                            </BookTitle>
+                            <BookComment>abc story....
+                            </BookComment>
+                        </MainBook>
+                    </LibraryInfo>
+                </CentreLibrary>
+                <LocalLibrary>
+                    <LibraryInfo>
+                        <Location city="cheongju">
+                            <LibName>Cheongju Centre Library
+                            </LibName>
+                            <AddressLib>Chungbuk, Cheongju, Heungdukgu..
+                            </AddressLib>
+                            <Telephone>043-9999-1234
+                            </Telephone>
+                            <MainBook>
+                                <BookTitle>Beetle
+                                </BookTitle>
+                                <BookComment>NONE
+                                </BookComment>
+                                <BookPrice>78,000
+                                </BookPrice>
+                            </MainBook>
+                        </Location>
+                        <Location city="daejeon">
+                            <LibName>Daejeon Centre Library
+                            </LibName>
+                            <AddressLib>Daejeonsi........
+                            </AddressLib>
+                            <Telephone>041-4545-1234
+                            </Telephone>
+                            <MainBook>
+                                <BookTitle>Space Odde.
+                                </BookTitle>
+                                <BookComment>NONE
+                                </BookComment>
+                            </MainBook>
+                        </Location>
+                    </LibraryInfo>
+                </LocalLibrary>
+            </LibraryBody>
+        </InfoLibrary>
+    </Lib_Message>

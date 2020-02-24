@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Songs>
+ <song>
+   <mp3 kbs="128" size="6128">
+     <id3>
+      <title>Simon</title>
+      <artist>Lifehouse</artist>
+      <album>No Name Face</album>
+      <year>2000</year>
+      <genre>Alternative Rock</genre>
+      <track>6</track>     
+     </id3>
+   </mp3>
+  </song>
+  <song>
+   <mp3 kbs="128" size="6359">
+     <id3>
+      <title>Hands Clean</title>
+      <artist>Alanis Morrisette</artist>
+      <album>Under Rug Swept</album>
+      <year>2002</year>
+      <genre>Alternative Rock</genre>
+      <track>3</track>
+     </id3>
+   </mp3>
+  </song>
+  <song>
+   <mp3 kbs="256" size="6460">
+     <id3>
+      <title>Alive</title>
+      <artist>Payable On Deatch</artist>
+      <album>Satellit</album>
+      <year>2002</year>
+      <genre>Metal</genre>
+      <track/>
+     </id3>
+   </mp3>
+ </song>
+ <song> 
+	 <mp3 kbs="256" size="4203">
+	   <id3>
+		 <title>Crawling In The Dark</title>
+		 <artist>Hoobastank</artist>
+		 <album>Hoobastank (Selftitled)</album>
+		 <year>2002</year>
+		 <genre>Alternative Rock</genre>
+		 <track/>
+	  </id3>
+	 </mp3>
+  </song>
+</Songs>
